@@ -5,7 +5,7 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
-  profile_pic: string;
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -26,7 +26,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Kindly provide password"],
     },
-    profile_pic: {
+    avatar: {
       type: String,
       default: "",
     },
