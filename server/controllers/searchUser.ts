@@ -3,13 +3,14 @@ import UserModel from "../models/userModel";
 
 const searchUser = async (req: Request, res: Response): Promise<Response> => {
   try {
-    const { search } = req.body;
+    const { search, selfId } = req.body;
 
     const query = new RegExp(search, "i");
 
     const user = await UserModel.find({
       $or: [{ name: query }, { email: query }],
-    }).select("-password");
+      _id: { $ne: selfId },
+    }).select("-password -createdAt -updatedAt");
 
     return res.json({
       message: "search user results",
