@@ -2,13 +2,14 @@ import { Router } from "express";
 import signUpUser from "../controllers/signUpUser";
 import checkEmail from "../controllers/checkEmail";
 import checkPassword from "../controllers/checkPassword";
-import userDetails from "../controllers/userDetails";
+import logout from "../controllers/logout";
+import { uploadAvatar } from "../utils/awsFunctions";
 
 const authRouter = Router();
 
-authRouter.post("/signup", signUpUser);
+authRouter.post("/signup", uploadAvatar.single("avatar"), signUpUser);
 authRouter.post("/email", checkEmail);
 authRouter.post("/password", checkPassword);
-authRouter.get("/getUserDetailsFromToken", userDetails);
+authRouter.post("/logout", logout);
 
 export default authRouter;
