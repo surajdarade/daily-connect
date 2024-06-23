@@ -7,9 +7,29 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
 
-const signUpUser = async (req: Request, res: Response): Promise<Response> => {
+interface File {
+  fieldname: string;
+  originalname: string;
+  encoding: string;
+  mimetype: string;
+  size: number;
+  destination: string;
+  filename: string;
+  path: string;
+  buffer: Buffer;
+  location?: string;
+}
+
+export interface CustomFile extends File {
+  location?: string;
+}
+
+const signUpUser = async (
+  req: Request & { file?: CustomFile },
+  res: Response
+): Promise<Response> => {
   try {
-    let { name, email, password, profile_pic } = req.body;
+    let { name, email, password } = req.body;
 
     // Trim name and email
     name = name.trim();
@@ -47,7 +67,7 @@ const signUpUser = async (req: Request, res: Response): Promise<Response> => {
 
     if (checkEmail) {
       return res.status(400).json({
-        message: "User already exists",
+        message: "Email is already taken",
         error: true,
         success: false,
       });
@@ -57,19 +77,39 @@ const signUpUser = async (req: Request, res: Response): Promise<Response> => {
     const salt = await bcryptjs.genSalt(10);
     const hashpassword = await bcryptjs.hash(password, salt);
 
-    const payload: Partial<IUser> = {
-      name,
-      email,
-      profile_pic,
-      password: hashpassword,
-    };
+    if (req?.file && req?.file?.location) {
+      const avatar_location = req.file.location;
+      const payload: Partial<IUser> = {
+        name,
+        email,
+        password: hashpassword,
+        avatar: avatar_location,
+      };
+      const user = new UserModel(payload);
+      const userSave = await user.save();
+    } else {
+      const payload: Partial<IUser> = {
+        name,
+        email,
+        password: hashpassword,
+      };
+      const user = new UserModel(payload);
+      const userSave = await user.save();
+    }
 
-    const user = new UserModel(payload);
-    const userSave = await user.save();
+    // const {
+    //   name: savedName,
+    //   email: savedEmail,
+    //   avatar: savedProfilePic,
+    // } = userSave;
 
     return res.status(201).json({
-      message: "User created successfully",
-      data: userSave,
+      message: "Account created successfully",
+      // data: {
+      //   name: savedName,
+      //   email: savedEmail,
+      //   avatar: savedProfilePic,
+      // },
       success: true,
     });
   } catch (error) {
