@@ -53,6 +53,7 @@ const checkPassword = async (
     return res.status(200).json({
       message: "Logged in successfully",
       success: true,
+      data: token,
     });
   } catch (error) {
     return res.status(500).json({
