@@ -3,8 +3,8 @@ import mongoose, { Document, Schema, Model } from "mongoose";
 // Interface for the Message document
 export interface IMessage extends Document {
   text: string;
-  imageUrl: string;
-  videoUrl: string;
+  imageUrl?: string;
+  videoUrl?: string;
   seen: boolean;
   msgByUserId: mongoose.Types.ObjectId;
   createdAt: Date;
