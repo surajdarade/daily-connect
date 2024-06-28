@@ -6,6 +6,7 @@ interface DecodedToken {
 }
 
 interface ITokenResponse {
+  _id?: string;
   message: string;
   logout: boolean;
 }
