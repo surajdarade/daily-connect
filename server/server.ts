@@ -6,8 +6,10 @@ import connectToDatabase from "./config/database";
 import authRouter from "./routes/authRoutes";
 import userRouter from "./routes/userRoutes";
 import chatRouter from "./routes/chatRoutes";
+import server, { app } from "./socket/socket";
 
-const app = express();
+// const app = express();
+
 dotenv.config();
 
 app.use(
@@ -29,7 +31,7 @@ app.use("/api/v1/user", userRouter);
 app.use("/api/v1/chat", chatRouter);
 
 connectToDatabase().then(() => {
-  app.listen(PORT, () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on PORT: ${PORT} 🚀`);
   });
 });
