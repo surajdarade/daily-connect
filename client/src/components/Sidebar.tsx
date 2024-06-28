@@ -1,22 +1,112 @@
 import { CiLogout } from "react-icons/ci";
-import { FaUserPlus } from "react-icons/fa";
+import { FaImage, FaVideo, FaUserPlus } from "react-icons/fa6";
 import { MdOutlineChat } from "react-icons/md";
-import { NavLink } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store/store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditProfileModal from "./EditProfileModal";
 import Avatar from "./Avatar";
 import { FiArrowUpLeft } from "react-icons/fi";
 import SearchUser from "./SearchUser";
+import { userSliceReset } from "../store/userSlice";
+import { getSocket } from "../middleware/socketMiddleware";
+import toast from "react-hot-toast";
+import axios from "axios";
+
+type User = {
+  _id: string;
+  name: string;
+  email: string;
+  avatar: string;
+  online: boolean;
+};
+
+type Message = {
+  _id: string;
+  msgByUserId: string;
+  text?: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  createdAt: string;
+};
+
+type ConversationUser = {
+  sender: User;
+  receiver: User;
+  lastMsg?: Message;
+  unseenMsg?: number;
+  userDetails: User;
+};
 
 const Sidebar = () => {
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const socketConnection = getSocket();
 
   const [openEditProfileModal, setOpenEditProfileModal] =
     useState<boolean>(false);
-  const [allUsers, setAllUsers] = useState([]);
+  const [allUsers, setAllUsers] = useState<ConversationUser[]>([]);
   const [openSearchUser, setOpenSearchUser] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (socketConnection) {
+      socketConnection.emit("sidebar", user?._id);
+
+      socketConnection.on("conversation", (data) => {
+        console.log("conversation", data);
+
+        const conversationUserData = data.map(
+          (conversationUser: {
+            sender: { _id: string };
+            receiver: { _id: string | undefined };
+          }) => {
+            if (
+              conversationUser?.sender?._id === conversationUser?.receiver?._id
+            ) {
+              return {
+                ...conversationUser,
+                userDetails: conversationUser?.sender,
+              };
+            } else if (conversationUser?.receiver?._id !== user?._id) {
+              return {
+                ...conversationUser,
+                userDetails: conversationUser.receiver,
+              };
+            } else {
+              return {
+                ...conversationUser,
+                userDetails: conversationUser.sender,
+              };
+            }
+          }
+        );
+
+        setAllUsers(conversationUserData);
+      });
+    }
+  }, [socketConnection, user]);
+
+  const handleLogout = async () => {
+    const socket = getSocket();
+    if (socket) {
+      socket.disconnect();
+    }
+    dispatch(userSliceReset());
+    localStorage.clear();
+    try {
+      const res = await axios.post("http://localhost:3000/api/v1/auth/logout");
+      if (res.data.success) {
+        toast.success(res.data.message);
+        navigate("/email");
+      }
+    } catch (error) {
+      toast.error("Error logging out, try again later");
+    }
+  };
 
   return (
     <div className="w-full h-full grid grid-cols-[48px,1fr] bg-white">
@@ -51,15 +141,16 @@ const Sidebar = () => {
               height={40}
               name={user?.name || ""}
               imageUrl={user?.avatar}
-              userId={user?._id}
+              userId={user?._id || ""}
             />
           </button>
           <button
-            title="Logout"
-            className="w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-400 rounded"
+            title="logout"
+            className="w-12 h-12 flex justify-center items-center cursor-pointer hover:bg-slate-200 rounded"
+            onClick={handleLogout}
           >
-            <span className="">
-              <CiLogout size={21} />
+            <span className="-ml-2">
+              <CiLogout size={20} />
             </span>
           </button>
         </div>
@@ -67,7 +158,7 @@ const Sidebar = () => {
 
       <div className="w-full">
         <div className="h-16 flex items-center">
-          <h2 className="text-xl font-bold p-4 text-slate-800">Chats</h2>
+          <h2 className="text-2xl p-4 text-slate-800">Chats</h2>
         </div>
         <div className="bg-slate-200 p-[0.5px]"></div>
         <div className=" h-[calc(100vh-65px)] overflow-x-hidden overflow-y-auto scrollbar scroll-smooth">
@@ -81,6 +172,58 @@ const Sidebar = () => {
               </p>
             </div>
           )}
+          {allUsers.map((conv) => {
+            return (
+              <NavLink
+                to={"/" + conv?.userDetails?._id}
+                key={conv?.userDetails?._id}
+                className="flex items-center gap-2 py-3 px-2 border border-transparent hover:border-primary rounded hover:bg-slate-100 cursor-pointer"
+              >
+                <div>
+                  <Avatar
+                    imageUrl={conv?.userDetails?.avatar}
+                    name={conv?.userDetails?.name}
+                    width={40}
+                    height={40}
+                    userId={conv?.userDetails?._id}
+                  />
+                </div>
+                <div>
+                  <h3 className="text-ellipsis line-clamp-1 font-semibold text-base">
+                    {conv?.userDetails?.name}
+                  </h3>
+                  <div className="text-slate-500 text-xs flex items-center gap-1">
+                    <div className="flex items-center gap-1">
+                      {conv?.lastMsg?.imageUrl && (
+                        <div className="flex items-center gap-1">
+                          <span>
+                            <FaImage />
+                          </span>
+                          {!conv?.lastMsg?.text && <span>Image</span>}
+                        </div>
+                      )}
+                      {conv?.lastMsg?.videoUrl && (
+                        <div className="flex items-center gap-1">
+                          <span>
+                            <FaVideo />
+                          </span>
+                          {!conv?.lastMsg?.text && <span>Video</span>}
+                        </div>
+                      )}
+                    </div>
+                    <p className="text-ellipsis line-clamp-1">
+                      {conv?.lastMsg?.text}
+                    </p>
+                  </div>
+                </div>
+                {Boolean(conv?.unseenMsg) && (
+                  <p className="text-xs w-6 h-6 flex justify-center items-center ml-auto p-1 bg-primary text-white font-semibold rounded-full">
+                    {conv?.unseenMsg}
+                  </p>
+                )}
+              </NavLink>
+            );
+          })}
         </div>
       </div>
 

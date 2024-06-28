@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../store/store";
 
 interface AvatarProps {
-  userId?: string;
+  userId: string;
   name: string;
   imageUrl?: string;
   width: number;
@@ -18,8 +18,9 @@ const Avatar: React.FC<AvatarProps> = ({
   width,
   height,
 }) => {
-  const onlineUser = useSelector((state: RootState) => state?.user?.onlineUser);
-
+  const onlineUser = useSelector(
+    (state: RootState) => state?.user?.onlineUser
+  );
   let avatarName = "";
 
   if (name) {

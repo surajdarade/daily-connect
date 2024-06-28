@@ -4,6 +4,8 @@ import Loading from "./Loading";
 import UserSearchCard from "./UserSearchCard";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { RootState } from "../store/store";
+import { useSelector } from "react-redux";
 
 interface SearchUserProps {
   onClose: () => void;
@@ -21,11 +23,13 @@ const SearchUser: React.FC<SearchUserProps> = ({ onClose }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [search, setSearch] = useState<string>("");
 
+  const user = useSelector((state: RootState) => state.user);
+
   const handleSearchUser = async () => {
     const URL = `http://localhost:3000/api/v1/chat/searchUser`;
     try {
       setLoading(true);
-      const res = await axios.post(URL, { search });
+      const res = await axios.post(URL, { search, selfId: user?._id });
       setLoading(false);
 
       setSearchUser(res.data.data);
@@ -68,9 +72,9 @@ const SearchUser: React.FC<SearchUserProps> = ({ onClose }) => {
           )}
 
           {loading && (
-            <p>
+            <span>
               <Loading />
-            </p>
+            </span>
           )}
 
           {search.trim() !== "" && searchUser.length === 0 && !loading && (
