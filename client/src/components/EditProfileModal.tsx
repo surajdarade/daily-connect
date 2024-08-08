@@ -42,7 +42,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ onClose }) => {
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
-        `process.env.VITE_APP_SERVER_USER_URI/userDetails`,
+        `https://daily-connect-server.vercel.app/api/v1/user/userDetails`,
         {
           withCredentials: true,
         }
@@ -80,7 +80,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ onClose }) => {
       }
 
       const res = await axios.put(
-        `process.env.VITE_APP_SERVER_USER_URI/updateUser`,
+        `https://daily-connect-server.vercel.app/api/v1/user/updateUser`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

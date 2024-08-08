@@ -18,7 +18,7 @@ const CheckPassword = () => {
 
     try {
       const res = await axios.post(
-        `process.env.VITE_APP_SERVER_AUTH_URI/password`,
+        `https://daily-connect-server.vercel.app/api/v1/auth/password`,
         { userId: location?.state, password },
         {
           headers: { "Content-Type": "application/json" },

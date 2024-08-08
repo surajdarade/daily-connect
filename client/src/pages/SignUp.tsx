@@ -65,7 +65,7 @@ const SignUp = () => {
         }
 
         const res = await axios.post(
-          `process.env.VITE_APP_SERVER_AUTH_URI/signup`,
+          `https://daily-connect-server.vercel.app/api/v1/auth/signup`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },

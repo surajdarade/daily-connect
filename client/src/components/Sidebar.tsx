@@ -98,7 +98,7 @@ const Sidebar = () => {
     dispatch(userSliceReset());
     localStorage.clear();
     try {
-      const res = await axios.post(`process.env.VITE_APP_SERVER_AUTH_URI/logout`);
+      const res = await axios.post(`https://daily-connect-server.vercel.app/api/v1/auth/logout`);
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/email");

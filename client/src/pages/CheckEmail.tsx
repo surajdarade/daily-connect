@@ -25,10 +25,9 @@ const CheckEmail = () => {
 
     if (isValid) {
       try {
-        console.log(process.env.VITE_APP_SERVER_AUTH_URI)
         const res = await axios.post(
         
-          `process.env.VITE_APP_SERVER_AUTH_URI/email`,
+          `https://daily-connect-server.vercel.app/api/v1/auth/email`,
           { email },
           {
             headers: { "Content-Type": "application/json" },

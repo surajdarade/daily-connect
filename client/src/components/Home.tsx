@@ -22,7 +22,7 @@ const Home = () => {
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
-        `process.env.VITE_APP_SERVER_USER_URI/userDetails`,
+        `https://daily-connect-server.vercel.app/api/v1/user/userDetails`,
         { withCredentials: true }
       );
 
