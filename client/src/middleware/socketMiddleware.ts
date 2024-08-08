@@ -16,7 +16,7 @@ export const socketMiddleware: Middleware = ({ dispatch }) => (next) => (action)
   if (action.type === "user/connectSocket") {
     const token = localStorage.getItem("token");
     if (token) {
-      socket = io("http://daily-connect-server.vercel.app", {
+      socket = io("https://daily-connect-server.vercel.app", {
         auth: {
           token,
         },
