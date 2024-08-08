@@ -21,7 +21,7 @@ const Home = () => {
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/user/userDetails",
+        `process.env.VITE_APP_SERVER_USER_URI/userDetails`,
         { withCredentials: true }
       );
 

@@ -26,7 +26,7 @@ const SearchUser: React.FC<SearchUserProps> = ({ onClose }) => {
   const user = useSelector((state: RootState) => state.user);
 
   const handleSearchUser = async () => {
-    const URL = `http://localhost:3000/api/v1/chat/searchUser`;
+    const URL = `process.env.VITE_APP_SERVER_CHAT_URI/searchUser`;
     try {
       setLoading(true);
       const res = await axios.post(URL, { search, selfId: user?._id });

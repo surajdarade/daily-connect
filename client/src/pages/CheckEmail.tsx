@@ -25,8 +25,10 @@ const CheckEmail = () => {
 
     if (isValid) {
       try {
+        console.log(process.env.VITE_APP_SERVER_AUTH_URI)
         const res = await axios.post(
-          `http://localhost:3000/api/v1/auth/email`,
+        
+          `process.env.VITE_APP_SERVER_AUTH_URI/email`,
           { email },
           {
             headers: { "Content-Type": "application/json" },

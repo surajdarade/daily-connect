@@ -98,7 +98,7 @@ const Sidebar = () => {
     dispatch(userSliceReset());
     localStorage.clear();
     try {
-      const res = await axios.post("http://localhost:3000/api/v1/auth/logout");
+      const res = await axios.post(`process.env.VITE_APP_SERVER_AUTH_URI/logout`);
       if (res.data.success) {
         toast.success(res.data.message);
         navigate("/email");

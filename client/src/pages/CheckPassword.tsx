@@ -18,7 +18,7 @@ const CheckPassword = () => {
 
     try {
       const res = await axios.post(
-        `http://localhost:3000/api/v1/auth/password`,
+        `process.env.VITE_APP_SERVER_AUTH_URI/password`,
         { userId: location?.state, password },
         {
           headers: { "Content-Type": "application/json" },

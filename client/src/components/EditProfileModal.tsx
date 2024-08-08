@@ -42,7 +42,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ onClose }) => {
   const fetchUserDetails = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:3000/api/v1/user/userDetails",
+        `process.env.VITE_APP_SERVER_USER_URI/userDetails`,
         {
           withCredentials: true,
         }
@@ -80,7 +80,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ onClose }) => {
       }
 
       const res = await axios.put(
-        "http://localhost:3000/api/v1/user/updateUser",
+        `process.env.VITE_APP_SERVER_USER_URI/updateUser`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

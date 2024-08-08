@@ -65,7 +65,7 @@ const SignUp = () => {
         }
 
         const res = await axios.post(
-          `http://localhost:3000/api/v1/auth/signup`,
+          `process.env.VITE_APP_SERVER_AUTH_URI/signup`,
           formData,
           {
             headers: { "Content-Type": "multipart/form-data" },
