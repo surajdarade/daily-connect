@@ -24,7 +24,7 @@ Daily Connect with your closed ones with real-time messgage updates!
 
 1. Clone the repository
    ```sh
-   git clone https://github.com/your-username/daily-connect.git
+   git clone https://github.com/surajdarade/daily-connect.git
 
 2. Navigate to the project directory
    ```sh
