@@ -41,7 +41,7 @@ Daily Connect with your closed ones with real-time messgage updates!
     NODE_ENV="development"
     PORT=3000
     JWT_SECRET_KEY=<your-jwt-secret-key>
-    JWT_EXPIRE=7d
+    JWT_EXPIRE=30d
     AWS_BUCKET_NAME=<your-aws-bucket-name>
     AWS_BUCKET_REGION=<your-aws-bucket-region>
     AWS_IAM_USER_KEY=<your-aws-iam-user-key>
