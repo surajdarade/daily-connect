@@ -4,7 +4,7 @@ Daily Connect with your closed ones with real-time messgage updates!
 
 ## Features
 
-- **Real-Time Communication**: Engineered with Socket.io to provide instant chat and message updates.
+- **Real-Time Communication**: Crafted with Socket.io to provide instant chat and message updates.
 - **User Authentication**: Secure authentication using JWT.
 - **User Search**: API for searching users to chat with.
 - **Message Features**: Display the last message and count of unseen messages.
